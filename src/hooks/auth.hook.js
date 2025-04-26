@@ -2,50 +2,31 @@ import authService from "../services/auth.service.js"
 import { useSelector, useDispatch } from "react-redux"
 import {login, logout} from "../store/slice/auth.slice.js"
 import { useState } from "react"
+import { data } from "autoprefixer";
 
-const userLoginHook = ()=>{
+const userAuthHook = ()=>{
     const dispatch = useDispatch();
 
-    const [loginError, setLoginError] = useState(null);
-    const [loginLoading, setLoginLoading] = useState(false);
+    const [authError, setAuthError] = useState(null);
+    const [authLoading, setAuthLoading] = useState(false);
 
-    const userLoginFunc = async(code)=>{
-        setLoginLoading(true);
-
+    const userAuthFunc = async(code)=>{
+        setAuthLoading(true);
         try {
-            const response = await authService.login(code);
+            const response = await authService.auth(code);
             dispatch(login(response));
-            setLoginError(null);
+            setAuthError(null);
+            return "success"
         } catch (error) {
-            setLoginError(error.response.data.message)
+            setAuthError(error.response.data.message)
         }finally{
-            setLoginLoading(false);
+            setAuthLoading(false);
         }
     }
 
-    return {loginError, loginLoading, userLoginFunc}
+    return {authError, authLoading, userAuthFunc}
 };
 
-const userRegisterHook = ()=>{
-    const dispatch = useDispatch();
-    const [registerError, setRegisterError] = useState(null);
-    const [registerLoading, setRegisterLoading] = useState(false);
-
-    const userRegisterFunc = async(code)=>{
-        setRegisterLoading(true);
-        try {
-            const response = await authService.register(code);
-            dispatch(login(response));
-            setRegisterError(null);
-        } catch (error) {
-            setRegisterError(error.response.data.message);
-        }finally{
-            setRegisterLoading(true);
-        }
-    };
-
-    return {registerError, registerLoading, userRegisterFunc};
-};
 
 const userLogoutHook = ()=>{
     const dispatch = useDispatch();
@@ -53,6 +34,23 @@ const userLogoutHook = ()=>{
     const [logoutLoading, setLogoutLoading] = useState(false);
 
     const userLogoutFunc = async(code)=>{
+        setLogoutLoading(true);
 
-    }
+        try {
+            const response = await authService.logout(data);
+            dispatch(logout());
+            setLogoutError(null);
+        } catch (error) {
+            setLogoutError(error.response.data.message)
+        }finally{
+            setLogoutLoading(false)
+        }
+    };
+
+    return {logoutError, logoutLoading, userLogoutFunc}
+}
+
+export {
+    userAuthHook,
+    userLogoutHook
 }

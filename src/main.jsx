@@ -7,6 +7,7 @@ import {HomePage, AuthPage} from "./pages"
 import {GoogleOAuthProvider} from "@react-oauth/google"
 import { Provider } from 'react-redux'
 import store from "./store/store.js"
+import conf from "./conf/conf.js"
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
       {
         path:'auth',
         element:(
-          <GoogleOAuthProvider>
+          <GoogleOAuthProvider clientId={conf.authClientId}>
             <AuthPage/>
           </GoogleOAuthProvider>
         )
